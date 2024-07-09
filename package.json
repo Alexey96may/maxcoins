@@ -35,6 +35,7 @@
     "@vue/eslint-config-typescript": "^9.1.0",
     "@vue/test-utils": "^2.0.0-0",
     "@vue/vue3-jest": "^27.0.0-alpha.1",
+    "babel-eslint": "^10.1.0",
     "babel-jest": "^27.0.6",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
@@ -61,7 +62,14 @@
     "parserOptions": {
       "ecmaVersion": 2020
     },
-    "rules": {},
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto"
+        }
+      ]
+    },
     "overrides": [
       {
         "files": [
