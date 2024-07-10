@@ -7,7 +7,7 @@
     </div>
     <nav>
       <ul class="navList">
-        <li><router-link to="/">Каталог</router-link></li>
+        <li><router-link to="/catalog">Каталог</router-link></li>
         <li><router-link to="/about">Обо мне</router-link></li>
       </ul>
     </nav>
