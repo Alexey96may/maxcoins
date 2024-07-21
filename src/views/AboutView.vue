@@ -1,27 +1,7 @@
 <template>
   <main class="home">
     <section class="main_info_wrapper">
-      <div class="main_info">
-        <div class="main_info_logo">
-          <img src="../assets/Coins.png" alt="coins" />
-        </div>
-        <div class="main_info_text">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-            porttitor nisl non fermentum euismod. In orci leo, elementum ut
-            sapien et, laoreet rhoncus ex. Nunc imperdiet sem id pretium
-            dapibus. Curabitur vitae nibh ante. Suspendisse eu risus felis.
-            Morbi a nulla ac tortor aliquet fermentum. Curabitur efficitur
-            elementum purus, quis vestibulum sem. Suspendisse molestie leo
-            ligula, quis molestie neque commodo at. Phasellus id semper turpis.
-            Duis eu odio quis ante ultrices vehicula non ut magna. Etiam in
-            bibendum diam, et efficitur velit. Cras tempor dictum felis, a
-            pulvinar metus. Nullam odio diam, viverra nec bibendum non, faucibus
-            quis ipsum. Cras sit amet congue urna. Nullam ut metus eros. Quisque
-            sagittis ante eget dictum consequat.
-          </p>
-        </div>
-      </div>
+      <main-info></main-info>
       <img
         class="main_info_wrapper_img"
         src="../assets/backgraundMainInfo.png"
@@ -66,66 +46,18 @@
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
+import MainInfo from "../components/MainInfo.vue";
 
-@Options({})
-export default class HomeView extends Vue {}
+export default {
+  components: {
+    MainInfo,
+  },
+};
 </script>
 
 <style lang="scss">
 $padding: 50px;
 $margin: 50px;
-
-.main_info_wrapper {
-  height: 844px;
-  padding: 88px 50px;
-  margin-bottom: -50px;
-  margin-top: -10px;
-  position: relative;
-
-  .main_info_wrapper_img {
-    position: absolute;
-    display: block;
-    z-index: -999;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .main_info {
-    height: 424px;
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: $padding;
-    overflow-y: auto;
-
-    .main_info_logo {
-      margin-right: $margin;
-      width: 1400px;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: all 0.2s ease;
-        display: inline-block;
-      }
-    }
-
-    .main_info_text {
-      font-family: "Encode Sans SC";
-      text-align: center;
-      font-family: var(--font-family);
-      font-weight: 400;
-      font-size: 24px;
-      color: #000;
-    }
-  }
-}
 
 .about_me {
   margin-bottom: $margin;

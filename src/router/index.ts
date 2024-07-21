@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import CatalogView from "../views/CatalogView.vue";
+import CardView from "../views/CardView.vue";
+import NotFoundView from "../views/NotFoundView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -9,10 +11,15 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   },
   {
+    path: "/catalog/:id",
+    name: "card",
+    component: CardView,
+    props: true,
+  },
+  {
     path: "/catalog",
     name: "catalog",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/CatalogView.vue"),
+    component: CatalogView,
   },
   {
     path: "/about",
@@ -22,6 +29,11 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: NotFoundView,
   },
 ];
 

@@ -1,60 +1,103 @@
 <template>
   <main class="home">
+    <div class="hoverImg" :class="hoverImgPlus" @click="hoverImgSetDown()">
+      <img :src="require(`../assets/` + mainPhoto)" alt="photo of the coin" />
+    </div>
     <section class="main_info_wrapper">
-      <div class="main_info">
-        <div class="main_info_logo">
-          <img src="../assets/Coins.png" alt="coins" />
-        </div>
-        <div class="main_info_text">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-            porttitor nisl non fermentum euismod. In orci leo, elementum ut
-            sapien et, laoreet rhoncus ex. Nunc imperdiet sem id pretium
-            dapibus. Curabitur vitae nibh ante. Suspendisse eu risus felis.
-            Morbi a nulla ac tortor aliquet fermentum. Curabitur efficitur
-            elementum purus, quis vestibulum sem. Suspendisse molestie leo
-            ligula, quis molestie neque commodo at. Phasellus id semper turpis.
-            Duis eu odio quis ante ultrices vehicula non ut magna. Etiam in
-            bibendum diam, et efficitur velit. Cras tempor dictum felis, a
-            pulvinar metus. Nullam odio diam, viverra nec bibendum non, faucibus
-            quis ipsum. Cras sit amet congue urna. Nullam ut metus eros. Quisque
-            sagittis ante eget dictum consequat.
-          </p>
-        </div>
-      </div>
+      <main-info></main-info>
       <img
         class="main_info_wrapper_img"
         src="../assets/backgraundMainInfo.png"
         alt="coins"
       />
     </section>
-    <section class="about_me">
-      <div class="about_me_title"><h2>Обо мне</h2></div>
+    <section class="card_info">
+      <div class="card_info_title">
+        <h2>{{ pageData.title }}</h2>
+      </div>
       <hr />
-      <div class="contacts_wrapper">
-        <div class="mail_wrapper">
-          <div class="contact_logo">
-            <img src="../assets/email_icon.svg" alt="email" />
+      <div class="card_wrapper">
+        <div class="card_maininfo_wrapper">
+          <div class="coin_preview">
+            <div class="coin_mainphoto">
+              <img
+                :src="require(`../assets/` + mainPhoto)"
+                @click="hoverImgSetUp()"
+                alt="photo of the coin"
+              />
+            </div>
+            <div class="coin_gallery">
+              <div
+                class="coin_gallery__img"
+                @click="setMainPhoto(pageData.images[1])"
+              >
+                <div
+                  class="image_closing"
+                  :class="{
+                    image_closing_active: mainPhoto !== pageData.images[1],
+                  }"
+                ></div>
+                <img
+                  :src="require(`../assets/` + pageData.images[1])"
+                  alt="photo of the coin"
+                />
+              </div>
+              <div
+                class="coin_gallery__img"
+                @click="setMainPhoto(pageData.images[0])"
+              >
+                <div
+                  class="image_closing"
+                  :class="{
+                    image_closing_active: mainPhoto !== pageData.images[0],
+                  }"
+                ></div>
+                <img
+                  :src="require(`../assets/` + pageData.images[0])"
+                  alt="photo of the coin"
+                />
+              </div>
+              <div
+                class="coin_gallery__img"
+                @click="setMainPhoto(pageData.images[2])"
+              >
+                <div
+                  class="image_closing"
+                  :class="{
+                    image_closing_active: mainPhoto !== pageData.images[2],
+                  }"
+                ></div>
+                <img
+                  :src="require(`../assets/` + pageData.images[2])"
+                  alt="photo of the coin"
+                />
+              </div>
+            </div>
+            <a href="https://vk.com" target="_blank" class="coin_button"
+              >Связаться для обмена</a
+            >
           </div>
-          <div class="contact_link">
-            <a href="mailto: name@email.com">email@gmail.com</a>
+          <div class="coin_characters">
+            <h4>Характеристики</h4>
+            <hr />
+            <ul>
+              <li
+                v-for="(item, number) in pageData.characters"
+                v-bind:key="number"
+              >
+                <strong>{{ item.characterName }}</strong
+                >:
+                {{ item.characterText }}
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="tg_wrapper">
-          <div class="contact_logo">
-            <img src="../assets/tg_icon.svg" alt="telegram" />
-          </div>
-          <div class="contact_link">
-            <a href="https://web.telegram.org">telegram.com</a>
-          </div>
-        </div>
-        <div class="vk_wrapper">
-          <div class="contact_logo">
-            <img src="../assets/vk_icon.svg" alt="vk" />
-          </div>
-          <div class="contact_link">
-            <a href="https://vk.com">vk.com</a>
-          </div>
+        <div class="card_history">
+          <h4>История</h4>
+          <hr />
+          <p>
+            {{ pageData.history }}
+          </p>
         </div>
       </div>
     </section>
@@ -65,71 +108,99 @@
   </main>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from "vue-class-component";
+<script setup lang="ts">
+import MainInfo from "../components/MainInfo.vue";
+import { useStore } from "vuex";
+import { reactive, ref } from "vue";
+import { useRoute } from "vue-router";
 
-@Options({})
-export default class HomeView extends Vue {}
+const store = useStore();
+const coins = reactive(store.state.coins);
+const pageID = useRoute().params.id;
+let hoverImgPlus = ref("hoverImgDown");
+
+const pageData = reactive(pageDataSearcher(coins));
+
+interface CoinsObj {
+  id: number | string;
+  title: string;
+  year: number;
+  history: string;
+  characters: Array<object>;
+  images: Array<string>;
+  isSelling: boolean;
+  count: number;
+  date: string;
+  type: string;
+  country: string;
+}
+
+let mainPhoto = ref(pageData.images[0]);
+function setMainPhoto(newUrl: string): string {
+  mainPhoto.value = newUrl;
+  return newUrl;
+}
+
+function pageDataSearcher(coinsArr: Array<CoinsObj>): CoinsObj {
+  return coinsArr.filter((el) => el.id === pageID)[0];
+}
+
+function hoverImgSetUp() {
+  hoverImgPlus.value = "hoverImgUp";
+}
+function hoverImgSetDown() {
+  hoverImgPlus.value = "hoverImgDown";
+}
 </script>
 
 <style lang="scss">
 $padding: 50px;
 $margin: 50px;
+.hoverImg {
+  transition: all 0.3s;
+}
+.hoverImgUp {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9;
+  background-color: #000000ad;
+  overflow: auto;
 
-.main_info_wrapper {
-  height: 844px;
-  padding: 88px 50px;
-  margin-bottom: -50px;
-  margin-top: -10px;
-  position: relative;
-
-  .main_info_wrapper_img {
+  img {
+    width: initial;
+    width: initial;
     position: absolute;
-    display: block;
-    z-index: -999;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    transform: translateY(-50%) translateX(-50%);
+    left: 50%;
+    top: 50%;
   }
+}
+.hoverImgDown {
+  width: 0;
+  height: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 9;
+  background-color: #000000ad;
+  overflow: auto;
 
-  .main_info {
-    height: 424px;
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: $padding;
-    overflow-y: auto;
-
-    .main_info_logo {
-      margin-right: $margin;
-      width: 1400px;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: all 0.2s ease;
-        display: inline-block;
-      }
-    }
-
-    .main_info_text {
-      font-family: "Encode Sans SC";
-      text-align: center;
-      font-family: var(--font-family);
-      font-weight: 400;
-      font-size: 24px;
-      color: #000;
-    }
+  img {
+    width: initial;
+    width: initial;
+    position: absolute;
+    transform: translateY(-50%) translateX(-50%);
+    left: 50%;
+    top: 50%;
   }
 }
 
-.about_me {
+.card_info {
   margin-bottom: $margin;
-  .about_me_title h2 {
+  .card_info_title h2 {
     font-family: var(--font-family);
     font-weight: 600;
     font-size: 36px;
@@ -143,44 +214,125 @@ $margin: 50px;
     margin: 48px auto;
   }
 
-  .contacts_wrapper {
-    margin-bottom: $margin;
+  .card_wrapper {
+    margin: $margin;
 
-    & > div {
-      height: 100px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: $margin;
-    }
-    & > div:last-child {
-      margin-bottom: 0;
-    }
-
-    .contact_logo,
-    .contact_link {
-      background-color: #d9d9d9;
-      border-radius: 20px;
-      padding: 30px;
-    }
-    .contact_logo {
-      margin-right: 16px;
-      width: 112px;
-    }
-    .contact_link {
-      width: 600px;
-    }
-    .contact_link a {
+    h4 {
       font-family: var(--font-family);
-      font-weight: 400;
+      font-weight: 700;
+      margin: 0;
       font-size: 24px;
       text-align: center;
       color: #000;
-      height: 50px;
+    }
+
+    .card_maininfo_wrapper {
       display: flex;
-      text-align: center;
-      justify-content: center;
-      align-items: center;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      align-items: stretch;
+      margin-bottom: $margin;
+
+      .coin_preview {
+        padding: $padding;
+        background-color: #d9d9d9;
+        margin-right: $margin;
+
+        .coin_mainphoto {
+          margin: 0 auto;
+          width: 320px;
+          height: 320px;
+          margin-bottom: 40px;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+          }
+        }
+        .coin_gallery {
+          display: flex;
+          flex-wrap: nowrap;
+          justify-content: space-around;
+          align-items: center;
+          border-radius: 20px;
+          background-color: #cccccc;
+          margin-bottom: 40px;
+          padding: 40px;
+
+          .coin_gallery__img {
+            width: 144px;
+            height: 144px;
+            margin-right: 40px;
+            position: relative;
+
+            .image_closing {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              opacity: 0;
+              transition: all 0.3s;
+
+              background-color: #0000008f;
+            }
+            .image_closing_active {
+              opacity: 1;
+            }
+
+            &:last-child {
+              margin-right: 0;
+            }
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              display: block;
+            }
+          }
+        }
+        .coin_button {
+          display: block;
+          padding: 12px;
+          margin: 0 auto;
+          box-shadow: 0 5px 4px 0 rgba(0, 0, 0, 0.72);
+          background: #b0b0b0;
+          border-radius: 20px;
+          width: 485px;
+          font-family: var(--font-family);
+          font-weight: 400;
+          font-size: 24px;
+          text-align: center;
+          color: #000;
+        }
+      }
+
+      .coin_characters {
+        padding: $padding;
+        background-color: #d9d9d9;
+        width: 100%;
+
+        hr {
+          margin: 30px;
+          border-width: 1px;
+        }
+      }
+    }
+
+    .card_history {
+      padding: $padding;
+      background-color: #d9d9d9;
+
+      hr {
+        margin: 30px;
+        border-width: 1px;
+      }
+      p {
+        text-align: center;
+      }
     }
   }
 }

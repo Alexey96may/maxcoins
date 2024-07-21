@@ -1,27 +1,8 @@
 <template>
   <main class="home">
     <section class="main_info_wrapper">
-      <div class="main_info">
-        <div class="main_info_logo">
-          <img src="../assets/Coins.png" alt="coins" />
-        </div>
-        <div class="main_info_text">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-            porttitor nisl non fermentum euismod. In orci leo, elementum ut
-            sapien et, laoreet rhoncus ex. Nunc imperdiet sem id pretium
-            dapibus. Curabitur vitae nibh ante. Suspendisse eu risus felis.
-            Morbi a nulla ac tortor aliquet fermentum. Curabitur efficitur
-            elementum purus, quis vestibulum sem. Suspendisse molestie leo
-            ligula, quis molestie neque commodo at. Phasellus id semper turpis.
-            Duis eu odio quis ante ultrices vehicula non ut magna. Etiam in
-            bibendum diam, et efficitur velit. Cras tempor dictum felis, a
-            pulvinar metus. Nullam odio diam, viverra nec bibendum non, faucibus
-            quis ipsum. Cras sit amet congue urna. Nullam ut metus eros. Quisque
-            sagittis ante eget dictum consequat.
-          </p>
-        </div>
-      </div>
+      <main-info></main-info>
+
       <img
         class="main_info_wrapper_img"
         src="../assets/backgraundMainInfo.png"
@@ -32,62 +13,20 @@
       <div class="new_coins_title"><h2>Новые поступления</h2></div>
       <hr />
       <div class="new_card_wrapper">
-        <div class="new_card">
-          <div class="coin_photo">
-            <img src="../assets/card_title.png" alt="card" />
-          </div>
-          <div class="coin_info">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-              porttitor nisl non fermentum euismod. In orci leo, elementum ut
-              sapien et, laoreet rhoncus ex. Nunc imperdiet sem id pretium
-              dapibus. Curabitur vitae nibh ante. Suspendisse eu risus felis.
-              Morbi a nulla ac tortor aliquet fermentum.
-            </p>
-          </div>
-        </div>
-        <div class="new_card">
-          <div class="coin_photo">
-            <img src="../assets/card_title.png" alt="card" />
-          </div>
-          <div class="coin_info">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-              porttitor nisl non fermentum euismod. In orci leo, elementum ut
-              sapien et, laoreet rhoncus ex. Nunc imperdiet sem id pretium
-              dapibus. Curabitur vitae nibh ante. Suspendisse eu risus felis.
-              Morbi a nulla ac tortor aliquet fermentum.
-            </p>
-          </div>
-        </div>
-        <div class="new_card">
-          <div class="coin_photo">
-            <img src="../assets/card_title.png" alt="card" />
-          </div>
-          <div class="coin_info">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-              porttitor nisl non fermentum euismod. In orci leo, elementum ut
-              sapien et, laoreet rhoncus ex. Nunc imperdiet sem id pretium
-              dapibus. Curabitur vitae nibh ante. Suspendisse eu risus felis.
-              Morbi a nulla ac tortor aliquet fermentum.
-            </p>
-          </div>
-        </div>
-        <div class="new_card">
-          <div class="coin_photo">
-            <img src="../assets/card_title.png" alt="card" />
-          </div>
-          <div class="coin_info">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce
-              porttitor nisl non fermentum euismod. In orci leo, elementum ut
-              sapien et, laoreet rhoncus ex. Nunc imperdiet sem id pretium
-              dapibus. Curabitur vitae nibh ante. Suspendisse eu risus felis.
-              Morbi a nulla ac tortor aliquet fermentum.
-            </p>
-          </div>
-        </div>
+        <template v-if="coins.length > 0">
+          <coin-card
+            v-for="item in coins"
+            :key="item.id"
+            :title="item.title"
+            :description="item.history"
+            :endlink="item.id"
+            :year="item.year"
+            :isAvailable="item.count > 0"
+            :isSelling="item.isSelling"
+            :imagePath="item.images[0]"
+          ></coin-card>
+        </template>
+        <div v-else><p>Ничего не найдено</p></div>
       </div>
     </section>
     <hr class="standart_hr" />
@@ -97,11 +36,14 @@
   </main>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from "vue-class-component";
+<script setup lang="ts">
+import CoinCard from "../components/CoinCard.vue";
+import MainInfo from "../components/MainInfo.vue";
+import { useStore } from "vuex";
+import { reactive } from "vue";
 
-@Options({})
-export default class HomeView extends Vue {}
+const store = useStore();
+let coins = reactive(store.state.coins);
 </script>
 
 <style lang="scss">
@@ -110,10 +52,11 @@ $margin: 50px;
 
 .main_info_wrapper {
   height: 844px;
-  padding: 88px 50px;
   margin-bottom: -50px;
   margin-top: -10px;
   position: relative;
+  overflow: hidden;
+  width: 100%;
 
   .main_info_wrapper_img {
     position: absolute;
@@ -123,39 +66,6 @@ $margin: 50px;
     left: 0;
     width: 100%;
     height: 100%;
-  }
-
-  .main_info {
-    height: 424px;
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: $padding;
-    overflow-y: auto;
-
-    .main_info_logo {
-      margin-right: $margin;
-      width: 1400px;
-
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: all 0.2s ease;
-        display: inline-block;
-      }
-    }
-
-    .main_info_text {
-      font-family: "Encode Sans SC";
-      text-align: center;
-      font-family: var(--font-family);
-      font-weight: 400;
-      font-size: 24px;
-      color: #000;
-    }
   }
 }
 
@@ -180,48 +90,14 @@ $margin: 50px;
     justify-content: space-around;
     align-items: center;
     flex-wrap: nowrap;
+    overflow: auto;
+    padding: 25px;
 
-    .new_card {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      height: 546px;
-      width: 350px;
-      padding: 36px 18px;
-      background: linear-gradient(
-        180deg,
-        #c5c5c5 0%,
-        #9a9a9a 49.5%,
-        #767676 100%
-      );
-
-      .coin_photo {
-        width: 216px;
-        height: 216px;
-        margin-bottom: 36px;
-
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: all 0.2s ease;
-          display: inline-block;
-        }
-      }
-
-      .coin_info {
-        font-family: var(--font-family);
-        font-weight: 400;
-        font-size: 16px;
-        letter-spacing: 0.05em;
-        text-align: center;
-        color: #000;
-        background-color: #dddddd;
-        height: 100%;
-        border-radius: 20px;
-        padding: 12px;
-      }
+    & > div {
+      margin-right: 25px;
+    }
+    & > div:last-child {
+      margin-right: 0;
     }
   }
 }

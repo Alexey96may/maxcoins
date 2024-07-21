@@ -4,18 +4,21 @@
   <FooterSite msg="Welcome to Your Vue.js + TypeScript App" />
 </template>
 
-<script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import HeaderSite from "@/components/HeaderSite.vue"; // @ is an alias to /src
-import FooterSite from "@/components/FooterSite.vue"; // @ is an alias to /src
+<script setup lang="ts">
+import HeaderSite from "@/components/HeaderSite.vue";
+import FooterSite from "@/components/FooterSite.vue";
+import { onMounted } from "vue";
+import { useStore } from "vuex";
+import { reactive } from "vue";
 
-@Options({
-  components: {
-    HeaderSite,
-    FooterSite,
-  },
-})
-export default class App extends Vue {}
+const store = useStore();
+
+onMounted(async () => {
+  await store.dispatch("GET_COINS_FROM_IP");
+  console.log("from App шты", store.getters.COINS);
+});
+let test = reactive(store.getters.COINS);
+console.log("from App", test);
 </script>
 
 <style lang="scss">
